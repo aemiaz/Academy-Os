@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=1200, initial-scale=0.5, maximum-scale=1, viewport-fit=cover">
+<title>FertilizerPro - Inventory & Sales System</title>
+<style>
+:root{--bg:#f4f7f6;--card:#fff;--tx:#10241c;--mu:#5d7168;--bd:#e2ebe7;--pr:#0b8457;--sb:#0a2e23;--okb:#d3f3e1;--ok:#06603b;--wb:#ffe9b8;--w:#7a4a00;--cb:#fcd9d9;--c:#a11d1d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme="dark"]{--bg:#f4f7f6;--card:#fff;--tx:#10241c;--mu:#5d7168;--bd:#e2ebe7;--okb:#d3f3e1;--ok:#06603b;--wb:#ffe9b8;--w:#7a4a00;--cb:#fcd9d9;--c:#a11d1d}
+*{box-sizing:border-box;min-width:0}html{height:100%}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow-wrap:anywhere}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+aside{background:linear-gradient(180deg,#0b3427,#07211a);color:#d5e9df;padding:18px 14px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;z-index:30}
+.logo{display:flex;gap:10px;align-items:center;padding:0 6px 18px}.logo b{display:block;font-size:18px;color:#fff}.logo small{font-size:11px;color:#9fc4b3}
+.mk{width:36px;height:36px;border-radius:11px;background:var(--pr);color:#fff;display:grid;place-items:center;font-weight:700;flex:none}
+nav{flex:1;overflow-y:auto}nav a{display:block;padding:10px 14px;margin-bottom:4px;border-radius:12px;color:#a9c9bb;cursor:pointer;font-weight:500}
+nav a:hover{background:#ffffff0f;color:#fff}nav a.on{background:#ffffff17;color:#fff;box-shadow:inset 3px 0 0 #4cd694}
+.tag{padding:14px;border:1px solid #1f5a46;border-radius:12px;font-size:12px;color:#bfe0d1}
+main{padding:16px 24px 28px;width:100%}
+.top{display:flex;gap:12px;align-items:center;margin-bottom:20px}
+.top input{flex:1;padding:12px 14px;border:0;border-radius:12px;box-shadow:0 1px 2px #0a2e231f;background:var(--card);color:var(--tx);font:inherit}
+.burger{display:none;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:12px;padding:10px 12px}
+.user{display:flex;gap:10px;align-items:center}.av{width:38px;height:38px;border-radius:50%;background:var(--sb);color:#fff;display:grid;place-items:center;flex:none;font-weight:600}
+.user div{line-height:1.2}.user small{color:var(--mu);display:block}
+.head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start;margin-bottom:18px}
+h1{margin:0;font-size:26px;letter-spacing:-.02em}h2{margin:0;font-size:16px}.mu{color:var(--mu)}
+.btn,select,.date{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:12px;padding:10px 18px;font:inherit;cursor:pointer}
+.btn.p{background:var(--pr);color:#fff;border-color:var(--pr);font-weight:600;box-shadow:0 8px 18px -8px var(--pr)}.btn.sm{padding:6px 12px;font-size:13px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.card{background:var(--card);border-radius:18px;padding:20px;box-shadow:0 1px 2px #0a2e230d,0 12px 28px -14px #0a2e2333}
+.stat{display:flex;gap:14px;align-items:center;cursor:pointer}.stat .bar{width:4px;height:48px;border-radius:4px;flex:none}
+.stat b{font-size:24px;display:block}.stat small{display:block}
+.row2{display:grid;gap:14px;grid-template-columns:1.5fr 1.2fr 1.1fr;grid-template-areas:"ov cat rec" "low low rec"}
+.ov{grid-area:ov}.cat{grid-area:cat}.rec{grid-area:rec}.low{grid-area:low}
+.bars{display:flex;align-items:flex-end;gap:8px;height:170px;margin:14px 0 24px;border-bottom:1px solid var(--bd)}
+.bars .b{flex:1;background:var(--pr);border-radius:5px 5px 0 0;position:relative;min-height:2px}
+.bars span{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--mu);white-space:nowrap}
+.donutw{display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center;margin-top:12px}
+.donut{width:140px;height:140px;border-radius:50%;display:grid;place-items:center;flex:none}
+.donut div{width:84px;height:84px;background:var(--card);border-radius:50%;display:grid;place-items:center;text-align:center;font-size:12px}.donut b{display:block;font-size:20px}
+.leg{flex:1;min-width:130px}.leg p{margin:6px 0;display:flex;align-items:center;gap:8px}.leg p span{flex:1}.dot{width:9px;height:9px;border-radius:50%;flex:none}
+.li{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--bd)}.li:last-child{border:0}.li div{flex:1}.li b{display:block}.amt{flex:none;font-weight:600;white-space:nowrap}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse}
+th{text-align:left;color:var(--mu);font-weight:600;padding:10px 8px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+td{padding:11px 8px;border-top:1px solid var(--bd)}
+.pill{display:inline-block;padding:3px 11px;border-radius:99px;font-size:12px;font-weight:600;white-space:nowrap}
+.ok{background:var(--okb);color:var(--ok)}.wn{background:var(--wb);color:var(--w)}.cr{background:var(--cb);color:var(--c)}
+.ini{width:32px;height:32px;border-radius:10px;background:var(--okb);color:var(--ok);display:grid;place-items:center;font-weight:700}
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.tools select{flex:1;min-width:120px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.tabs .on{background:var(--pr);color:#fff;border-color:var(--pr)}
+a.lk{color:var(--pr);cursor:pointer;font-weight:600}
+.ov2{display:none}
+dialog{border:0;border-radius:18px;background:var(--card);color:var(--tx);width:min(94vw,600px);max-height:90vh;overflow:auto;padding:22px}dialog::backdrop{background:#0008}
+label{display:block;margin:10px 0 4px;color:var(--mu);font-size:12px}
+.frm{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.frm select,.frm input,dialog>input{width:100%;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font:inherit}
+.err{color:var(--c);min-height:18px;margin:6px 0}.tot{display:flex;justify-content:space-between;font-size:18px;font-weight:700;padding:10px 0}
+.acts{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:8px}
+.invh{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+@media(max-width:1200px){.row2{grid-template-columns:1fr 1fr;grid-template-areas:"ov cat" "low low" "rec rec"}.grid4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:900px){.app{grid-template-columns:1fr}aside{position:fixed;left:0;top:0;width:250px;transform:translateX(-100%);transition:.25s}
+body.nav aside{transform:none}body.nav .ov2{display:block;position:fixed;inset:0;background:#0007;z-index:20}.burger{display:block}main{padding:12px 14px 24px}.user div{display:none}}
+@media(max-width:640px){.row2{grid-template-columns:1fr;grid-template-areas:"ov" "cat" "low" "rec"}.grid4{grid-template-columns:1fr}h1{font-size:21px}.frm{grid-template-columns:1fr}.acts .btn{flex:1}
+.rs thead{display:none}.rs tr{display:block;border:1px solid var(--bd);border-radius:12px;margin-bottom:10px;padding:6px 12px}
+.rs td{display:flex;justify-content:space-between;gap:12px;border:0;padding:6px 0;text-align:right}.rs td:empty{display:none}
+.rs td::before{content:attr(data-l);color:var(--mu);text-align:left;flex:none}}
+@media print{aside,.top,.head .btn,.tabs,.acts,.ov2{display:none!important}.app{display:block}body>*:not(dialog):not(.app){display:none}}
+.login{display:none}body.lo .login{display:grid;place-items:center;min-height:100vh;padding:16px}body.lo .app,body.lo .ov2{display:none}
+.lc{width:min(100%,380px);background:var(--card);border-radius:20px;padding:26px;box-shadow:0 20px 50px -20px #0a2e2366}.lc h2{margin:8px 0}
+.lc input{width:100%;padding:11px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font:inherit}
+.lbrand{display:flex;gap:12px;align-items:center;margin-bottom:14px}.lbrand b{font-size:18px;display:block}.lbrand small{color:var(--mu)}
+.mk{overflow:hidden}.mk img{width:100%;height:100%;object-fit:contain}.mk:has(img){background:#fff}
+.rangebox{margin-bottom:14px}.ledger-sheet{background:var(--card)}.ledger-actions{position:sticky;bottom:0;background:var(--card);padding-top:12px;border-top:1px solid var(--bd)}@media print{dialog[open]{position:static!important;width:100%!important;max-width:none!important;max-height:none!important;box-shadow:none!important}.ledger-actions{display:none!important}.card{box-shadow:none;border:1px solid #ddd}.rangebox{display:none!important}}
+/* Ledger sheet: readable on phones and sized like a printable page */
+.ledger-sheet{width:100%;max-width:900px;margin:0 auto;background:var(--card);padding:22px;border-radius:16px}
+.ledger-sheet .invh{border-bottom:1px solid var(--bd);padding-bottom:14px;margin-bottom:16px}
+.ledger-sheet .card{box-shadow:none;border:1px solid var(--bd);border-radius:12px;padding:14px;margin-top:14px}
+.ledger-sheet .grid4{grid-template-columns:repeat(auto-fit,minmax(145px,1fr));margin-bottom:14px}
+.ledger-sheet .grid4 .card{margin-top:0}
+.ledger-actions{position:static;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-start;align-items:center;background:transparent}
+.ledger-actions .btn{flex:0 1 auto;white-space:nowrap;min-width:0}
+.ledger-sheet .tw{overflow-x:auto}
+@media(max-width:640px){.ledger-sheet{padding:14px;border-radius:12px}.ledger-sheet .invh{display:flex;flex-direction:column;gap:8px}.ledger-sheet .grid4{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.ledger-sheet .grid4 .card{padding:12px 10px}.ledger-sheet .grid4 b{display:block;margin-top:4px;font-size:16px}.ledger-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}.ledger-actions .btn{width:100%;white-space:normal;min-height:44px}.ledger-sheet table{min-width:620px}}
+@media print{body{background:#fff!important;color:#111!important}.ledger-sheet{max-width:190mm;margin:0 auto;padding:0;background:#fff!important;color:#111!important}.ledger-sheet .card{break-inside:avoid;background:#fff!important;color:#111!important;border:1px solid #bbb;box-shadow:none}.ledger-sheet .mu, .ledger-sheet th{color:#444!important}.ledger-sheet .grid4{grid-template-columns:repeat(4,1fr)!important}.ledger-sheet .tw{overflow:visible}.ledger-sheet table{min-width:0}.ledger-sheet td,.ledger-sheet th{font-size:10px;padding:6px}.ledger-sheet h2{font-size:18px}.ledger-sheet h3{font-size:13px}}
+
+#cust{width:min(96vw,960px);max-width:960px;max-height:92vh;padding:0;background:var(--bg)}
+#cust #custb{padding:22px}
+@media(max-width:640px){#cust{width:96vw;max-height:94vh}#cust #custb{padding:8px}}
+@media print{#cust{width:190mm!important;max-width:190mm!important;max-height:none!important;padding:0!important;background:#fff!important}#cust #custb{padding:0!important}}
+.money-bars{display:grid;gap:14px;margin-top:18px}.money-row{display:grid;grid-template-columns:112px 1fr auto;gap:8px;align-items:center;font-size:12px}.money-track{height:14px;border-radius:99px;background:var(--bd);overflow:hidden}.money-fill{height:100%;border-radius:99px;min-width:4px}.money-row b{font-size:13px;white-space:nowrap}@media(max-width:640px){.money-row{grid-template-columns:100px 1fr auto}.money-row b{font-size:12px}}
+/* Always use desktop layout */
+html,body{min-width:1100px}
+.app{grid-template-columns:240px 1fr}
+aside{position:sticky;left:auto;top:0;width:auto;transform:none!important;transition:none}
+.burger{display:none!important}
+.ov2{display:none!important}
+main{padding:16px 24px 28px}
+.user div{display:block}
+.row2{grid-template-columns:1.5fr 1.2fr 1.1fr;grid-template-areas:"ov cat rec" "low low rec"}
+.grid4{grid-template-columns:repeat(4,1fr)}
+.frm{grid-template-columns:1fr 1fr}
+.acts .btn{flex:0 1 auto}
+.rs thead{display:table-header-group}.rs tr{display:table-row;border:0;padding:0;margin:0}.rs td{display:table-cell;border-top:1px solid var(--bd);padding:11px 8px;text-align:left}.rs td::before{content:none}
+.ledger-sheet{max-width:900px;padding:22px}.ledger-sheet .grid4{grid-template-columns:repeat(4,1fr)}.ledger-actions{display:flex;grid-template-columns:none;width:auto}.ledger-actions .btn{width:auto;min-height:0}.ledger-sheet table{min-width:0}
+#cust{width:min(96vw,960px);max-width:960px;max-height:92vh}#cust #custb{padding:22px}
+#inv{width:min(96vw,840px);max-width:840px;padding:16px}
+.docs img{width:100%;display:block;border:1px solid var(--bd);margin-bottom:10px;background:#fff}
+.paybox{border:1px solid var(--bd)}
+#prx{display:none}
+@page{size:A4;margin:0}
+@media print{body:not(.pr){padding:10mm}body.pr .app,body.pr dialog,body.pr .login{display:none!important}body.pr #prx{display:block}#prx img{width:100%;display:block;page-break-after:always}}
+
+/* ===== 3D professional theme ===== */
+body{background:radial-gradient(1200px 600px at 70% -10%,#ffffff 0,#eaf2ef 55%,#dfeae6 100%) fixed}
+aside{background:linear-gradient(165deg,#0f4a38 0%,#0a2e23 45%,#051a14 100%);box-shadow:6px 0 24px -6px #02130e99,inset -1px 0 0 #ffffff14,inset 0 1px 0 #ffffff1f}
+.mk{background:linear-gradient(145deg,#16b878,#066443);box-shadow:0 6px 12px -3px #021a1299,inset 0 2px 0 #ffffff55,inset 0 -3px 0 #0003;text-shadow:0 1px 2px #0006}
+.logo b{text-shadow:0 2px 4px #0008}
+nav a{transition:.18s;border:1px solid transparent}
+nav a:hover{background:linear-gradient(180deg,#ffffff1f,#ffffff0a);transform:translateX(3px);box-shadow:0 4px 10px -4px #0009}
+nav a.on{background:linear-gradient(180deg,#ffffff2b,#ffffff10);border-color:#ffffff1f;box-shadow:inset 3px 0 0 #4cd694,0 6px 14px -6px #000a,inset 0 1px 0 #ffffff33;text-shadow:0 1px 2px #0006}
+.tag{background:linear-gradient(180deg,#ffffff12,#ffffff05);box-shadow:inset 0 1px 0 #ffffff1f,0 6px 14px -8px #000}
+.top input{box-shadow:inset 0 2px 4px #0a2e2318,0 1px 0 #fff,0 8px 18px -10px #0a2e2366;border:1px solid #d5e3dd}
+.av{background:linear-gradient(145deg,#145a44,#06241b);box-shadow:0 5px 10px -3px #0a2e2399,inset 0 1px 0 #ffffff44}
+.card{background:linear-gradient(180deg,#fff 0%,#f8fbfa 100%);border:1px solid #e3ede8;box-shadow:0 1px 0 #fff inset,0 2px 4px #0a2e2312,0 14px 28px -12px #0a2e2340,0 28px 40px -28px #0a2e2330;transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-2px);box-shadow:0 1px 0 #fff inset,0 4px 8px #0a2e2314,0 22px 36px -14px #0a2e2352}
+.stat{perspective:700px}
+.stat:hover{transform:translateY(-5px) rotateX(3deg);box-shadow:0 1px 0 #fff inset,0 24px 36px -14px #0a2e2366}
+.stat .bar{box-shadow:0 4px 8px -2px currentColor,inset 2px 0 0 #fff6,inset -2px 0 0 #0002}
+.stat b{text-shadow:0 1px 0 #fff,0 3px 6px #0a2e2322}
+.btn,.date{background:linear-gradient(180deg,#fff,#eef4f1);border:1px solid #cfdcd6;border-bottom:3px solid #b9cac2;box-shadow:0 4px 8px -4px #0a2e2355,inset 0 1px 0 #fff;transition:.12s;font-weight:500}
+.btn:hover{transform:translateY(-1px);box-shadow:0 8px 14px -6px #0a2e2377,inset 0 1px 0 #fff}
+.btn:active{transform:translateY(2px);border-bottom-width:1px;box-shadow:inset 0 3px 6px #0a2e2330}
+.btn.p{background:linear-gradient(180deg,#14a870 0%,#0b8457 55%,#08683f 100%);border:1px solid #076a45;border-bottom:3px solid #04472d;color:#fff;text-shadow:0 1px 2px #0005;box-shadow:0 10px 18px -8px #0b8457,inset 0 1px 0 #ffffff55}
+.btn.p:hover{filter:brightness(1.07)}
+.btn.p:active{box-shadow:inset 0 3px 8px #0006}
+.tabs .on{background:linear-gradient(180deg,#14a870,#08683f);border-bottom-color:#04472d;box-shadow:inset 0 2px 5px #0004}
+select,.frm input,dialog>input,#du,#pdue,.lc input{box-shadow:inset 0 2px 4px #0a2e231c,0 1px 0 #fff;border:1px solid #cfdcd6}
+input:focus,select:focus{outline:0;border-color:var(--pr)!important;box-shadow:inset 0 2px 4px #0a2e2318,0 0 0 3px #0b845733}
+.bars .b{background:linear-gradient(90deg,#0f9d68 0%,#0b8457 55%,#075c3c 100%);box-shadow:5px 0 0 -1px #04412b,0 10px 14px -6px #0b845599,inset 0 2px 0 #ffffff55;border-radius:6px 6px 0 0;transition:.2s}
+.bars .b:hover{filter:brightness(1.12);transform:translateY(-3px)}
+.donut{box-shadow:0 14px 22px -8px #0a2e2377,inset 0 -6px 10px #0003,inset 0 4px 6px #fff5}
+.donut div{box-shadow:inset 0 4px 8px #0a2e2330,0 1px 0 #fff}
+.dot{box-shadow:0 2px 3px #0004,inset 0 1px 0 #fff8}
+th{border-bottom:2px solid #dbe7e1}
+tbody tr{transition:.12s}tbody tr:hover td{background:#f1f8f5}
+.pill{box-shadow:0 2px 4px -1px #0a2e2333,inset 0 1px 0 #ffffffaa;border:1px solid #0001}
+.ok{background:linear-gradient(180deg,#e2f8ec,#c4ecd6)}.wn{background:linear-gradient(180deg,#fff1cd,#ffe0a0)}.cr{background:linear-gradient(180deg,#fee4e4,#f9c6c6)}
+.ini{background:linear-gradient(145deg,#e4f8ed,#bfe9d1);box-shadow:0 4px 7px -3px #0a2e2366,inset 0 1px 0 #fff}
+dialog{border:1px solid #dbe7e1;box-shadow:0 2px 0 #fff inset,0 30px 70px -15px #021a1299,0 12px 24px -8px #0a2e2355;background:linear-gradient(180deg,#fff,#f6faf8)}
+dialog::backdrop{background:radial-gradient(circle at 50% 30%,#0a2e2366,#02130ecc);backdrop-filter:blur(3px)}
+.lc{background:linear-gradient(180deg,#fff,#f3f8f6);border:1px solid #dbe7e1;box-shadow:0 2px 0 #fff inset,0 40px 70px -25px #021a12aa,0 14px 24px -10px #0a2e2355}
+body.lo{background:radial-gradient(900px 500px at 50% 0,#12684d,#0a2e23 60%,#04170f)}
+.docs img{border-radius:6px;box-shadow:0 18px 34px -14px #0a2e2377,0 4px 8px #0a2e2322;border:1px solid #dbe7e1}
+.li{transition:.12s}.li:hover{background:#f3f9f6}
+.money-track{box-shadow:inset 0 2px 4px #0a2e2330}.money-fill{box-shadow:0 3px 6px -2px #0004,inset 0 2px 0 #fff6}
+@media print{body,.card,.btn{background:#fff!important;box-shadow:none!important}}
+.wabtn{background:linear-gradient(180deg,#34e07b,#1fb958 55%,#128c46);color:#fff;border:1px solid #0f7a3c;border-bottom:3px solid #0a5a2b;text-shadow:0 1px 2px #0004;padding:6px 10px;display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.wabtn:hover{filter:brightness(1.07);background:linear-gradient(180deg,#34e07b,#1fb958 55%,#128c46)}
+.wai{width:18px;height:18px;fill:currentColor;flex:none}
+#wad{width:min(94vw,520px)}#wad textarea{width:100%;min-height:150px;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font:inherit;box-shadow:inset 0 2px 4px #0a2e231c;resize:vertical}
+</style></head><body class="lo">
+<div class="login"><form class="lc" onsubmit="return login(event)"><div class="lbrand"><span class="mk" id="llg"></span><div><b id="lsn"></b><small>Inventory & Sales System</small></div></div><h2>Sign in</h2>
+<label>Username</label><input id="lu" autocomplete="username"><label>Password</label><input id="lp" type="password" autocomplete="current-password"><div class="err" id="le"></div>
+<button class="btn p" style="width:100%">Sign in</button><p class="mu" style="font-size:12px;text-align:center">Default login: admin / admin123 (change it in Settings)</p></form></div>
+<div class="ov2" onclick="document.body.classList.remove('nav')"></div>
+<div class="app">
+<aside><div class="logo"><span class="mk" id="lg"></span><div><b id="sn"></b><small>Inventory & Sales System</small></div></div>
+<nav id="nav"></nav><button class="btn sm" onclick="logout()" style="margin-bottom:10px;background:transparent;color:#d5e9df;border-color:#1f5a46">Logout</button><div class="tag">Healthy Crops<br>Better Tomorrow</div></aside>
+<main>
+<div class="top"><button class="burger" onclick="document.body.classList.add('nav')">Menu</button>
+<input id="q" placeholder="Search products, invoices, or customers..." oninput="render()">
+<div class="user"><span class="av">A</span><div><b>Admin</b><small>Shop Owner</small></div></div></div>
+<div id="v"></div></main></div>
+
+<dialog id="tx"><h2 id="txt"></h2>
+<div class="frm"><div><label id="pl"></label><input id="pn" list="dl" placeholder="Select or type a new name"><datalist id="dl"></datalist></div>
+<div><label>Phone (for new party)</label><input id="ph" placeholder="0300-0000000" inputmode="tel" maxlength="12" oninput="this.value=fmtPh(this.value)"></div></div>
+<div class="frm" style="grid-template-columns:2fr 80px 110px;align-items:end;margin-top:6px"><div><label>Product</label><select id="ps" onchange="setPr()"></select></div><div><label>Qty</label><input id="pq" type="number" min="1" value="1"></div><div><label>Price (Rs.)</label><input id="pr" type="number" min="0"></div></div>
+<div class="acts"><button class="btn sm" onclick="addL()">Add item</button></div>
+<div class="err" id="err"></div><div id="lines"></div><div class="tot"><span>Total</span><span id="tot"></span></div>
+<div class="frm"><div><label>Payment</label><select id="pm" onchange="pmC()"><option value="f">Paid in full<option value="p">Partial - pay rest later<option value="l">Pay later (nothing now)</select></div>
+<div id="paw"><label>Paid now (Rs.)</label><input id="pa" type="number" min="0" oninput="updateSettlement()"></div></div>
+<div id="duw"><label>Remaining amount due on</label><input id="du" type="date" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx)"></div>
+<div class="acts"><button class="btn" onclick="tx.close()">Cancel</button><button class="btn" onclick="fin(0)">Save</button><button class="btn p" onclick="fin(1)">Save and Generate Invoice</button></div></dialog>
+
+<dialog id="inv"><div id="invb"></div></dialog>
+<dialog id="pay"><h2>Record Payment</h2><p class="mu" id="pinfo"></p><label>Amount received / paid (Rs.)</label><input id="pamt" type="number" min="1">
+<div id="pdw"><label>Next due date for remaining balance</label><input id="pdue" type="date"></div><div class="err" id="perr"></div>
+<div class="acts"><button class="btn" onclick="pay.close()">Cancel</button><button class="btn p" onclick="savePay()">Save Payment</button></div></dialog>
+<dialog id="dlg"><h2>Add Product</h2>
+<label>Name</label><input id="n" placeholder="e.g. Urea (50kg)"><label>Category</label><input id="c" placeholder="Urea">
+<div class="frm"><div><label>Stock</label><input id="s" type="number" value="10" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx)"></div><div><label>Min level</label><input id="mn" type="number" value="10" style="width:100%;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx)"></div></div>
+<label>Sale price (Rs.)</label><input id="p" type="number" value="1000"><label>Cost price (Rs.)</label><input id="cp" type="number" value="800">
+<div class="acts"><button class="btn" onclick="dlg.close()">Cancel</button><button class="btn p" onclick="addP()">Save</button></div></dialog>
+
+
+<dialog id="cust"><div id="custb"></div></dialog>
+<dialog id="wad"><div id="wab"></div></dialog>
+<dialog id="cedit"><h2>Edit Customer Details</h2><input type="hidden" id="ceid"><label>Customer name</label><input id="cename"><label>Phone</label><input id="cephone" placeholder="0300-0000000" inputmode="tel" maxlength="12" oninput="this.value=fmtPh(this.value)"><div class="err" id="ceerr"></div><div class="acts"><button class="btn" onclick="cedit.close()">Cancel</button><button class="btn p" onclick="saveCustomerEdit()">Save Details</button></div></dialog>
+<dialog id="ret"><h2>Record Crop Sale to Shop</h2><p class="mu" id="retparty"></p><input type="hidden" id="retid"><div class="frm"><div><label>Date</label><input id="retdate" type="date"></div><div><label>Crop name</label><input id="retdesc" placeholder="e.g. Wheat, Corn, Basmati"></div></div><div class="frm"><div><label>Quantity</label><input id="retqty" type="number" min="0.01" step="0.01" value="1" oninput="updateCropSale()"></div><div><label>Rate per unit (Rs.)</label><input id="retrate" type="number" min="0" step="0.01" oninput="updateCropSale()"></div></div><div class="tot"><span>Total crop value</span><span id="rettotal">Rs. 0</span></div><label>What to do with the crop value?</label><select id="retopt" onchange="updateCropSale()" style="width:100%"><option value="1">Deduct pending balance, pay the rest to customer now<option value="2">Deduct pending balance, pay the rest later<option value="3">Pay full crop value to customer now (no deduction)<option value="4">Deduct later (keep as credit on account, no payment now)<option value="5">Custom amounts</select>
+<div class="frm" style="grid-template-columns:1fr 1fr 1fr"><div><label>Deduction from pending (Rs.)</label><input id="retded" type="number" min="0" oninput="cropDed()"></div><div><label>Paid to customer (Rs.)</label><input id="retpaynow" type="number" min="0" oninput="retopt.value='5';cropShow()"></div><div><label>Remaining to pay (Rs.)</label><input id="retrem" type="number" readonly></div></div><div id="cropSettlement" class="card" style="padding:12px;margin-top:8px"><p class="mu" style="margin:0">Enter quantity and rate to calculate settlement.</p></div><label>Notes</label><input id="retnotes" placeholder="Optional note"><div class="err" id="reterr"></div><div class="acts"><button class="btn" onclick="ret.close()">Cancel</button><button class="btn p" onclick="saveReturn()">Save Crop Sale</button></div></dialog>
+<script>
+const TODAY="2025-09-25",MO="Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ");
+const fd=d=>{if(!d)return"-";const[y,m,x]=d.split("-");return +x+" "+MO[m-1]+" "+y};
+const R=n=>"Rs. "+Math.round(n).toLocaleString("en-US");
+let P=[["Urea (50kg)","Urea",12,20,2650,2100],["DAP Fertilizer (50kg)","DAP",8,10,3450,2800],["NP Fertilizer (50kg)","NP",6,10,3200,2600],["Potash (50kg)","Potash",5,10,4800,3900],["Organic Compost (25kg)","Organic",2,5,1250,950],["Zinc Sulphate (25kg)","Micronutrient",18,10,1800,1400]];
+let S=[["INV-1005","2025-09-25","Ali Traders",12500,12500,"",0],["INV-1004","2025-09-25","Farmer Group",8750,8750,"",0],["INV-1003","2025-09-24","Shahid Farm",15300,15300,"",0],["INV-1002","2025-09-24","Khan Agro",6200,2000,"2025-10-05",0],["INV-1001","2025-09-23","Saeed Farm",9800,9800,"",0]];
+let PU=[["PUR-1003","2025-09-24","Green Agro Supply",45000,45000,"",0],["PUR-1002","2025-09-20","Pakistan Fertilizers",32500,32500,"",0],["PUR-1001","2025-09-15","Agri Traders",28000,28000,"",0]];
+let CU=[["Ali Traders","0300-1112223"],["Farmer Group","0311-2223334"],["Shahid Farm","0321-3334445"],["Khan Agro","0333-4445556"],["Saeed Farm","0345-5556667"]];
+let SU=[["Green Agro Supply","0301-5556667"],["Pakistan Fertilizers","0312-6667778"],["Agri Traders","0322-7778889"]];
+let returns=[{id:"RET-0001",customer:"Khan Agro",date:"2025-09-25",desc:"Returned damaged Urea bags",qty:1,value:1800,notes:"Sample customer return"}];
+let custPay=[];
+const fmtPh=v=>{let d=String(v||"").replace(/\D/g,"");if(!d)return String(v||"").trim();if(d.startsWith("92")&&d.length>=12)d="0"+d.slice(2);d=d.slice(0,11);return d.length>4?d.slice(0,4)+"-"+d.slice(4):d};
+const WAI='<svg class="wai" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>';
+const HIST={"19":38e3,"20":44e3,"21":47e3,"22":62e3,"23":45e3,"24":53e3};
+const NAV=[["dashboard","Dashboard"],["products","Products"],["stock","Stock Management"],["sales","Sales"],["purchase","Purchase"],["customers","Customers"],["suppliers","Suppliers"],["reports","Reports"],["ledger","Customer Ledger"],["supplierLedger","Supplier Ledger"],["settings","Settings"]];
+let pg="dashboard",tab="Sales Report",cart=[],mode="S",sN=1006,pN=1004,sf="All",payK,payI;
+let reportFrom="",reportTo="",ledgerCustomer=null,cropCart=[];
+const CROP_TYPES=["Wheat","Corn","Basmati","White Sesame","Black Sesame","Other"];
+const creditForSale=x=>(x[8]||[]).reduce((z,c)=>z+(+c.amount||0),0),constBal=x=>x[3]-x[4]-creditForSale(x);
+const bal=x=>constBal(x),sum=(a,i)=>a.reduce((t,x)=>t+x[i],0);
+const st=x=>bal(x)<=0?["Paid","ok"]:x[4]>0?["Partial","wn"]:["Unpaid","cr"];
+const pst=p=>p[2]<=p[3]/2?["Critical","cr"]:p[2]<p[3]?["Low Stock","wn"]:["In Stock","ok"];
+const pill=(t,c)=>`<span class="pill ${c}">${t}</span>`;
+const due=x=>bal(x)>0&&x[5]?`<span style="${x[5]<TODAY?"color:var(--c);font-weight:600":""}">${fd(x[5])}${x[5]<TODAY?" (overdue)":""}</span>`:"";
+const tbl=(h,rows)=>`<div class="tw"><table class="rs"><thead><tr>${h.map(x=>`<th>${x}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td data-l="${h[i]}">${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+const hd=(t,s,b="")=>`<div class="head"><div><h1>${t}</h1><div class="mu">${s}</div></div>${b}</div>`;
+const go=p=>{pg=p;document.body.classList.remove("nav");q.value="";render()};
+const ft=(a,k)=>a.filter(x=>x.slice(0,3).join(" ").toLowerCase().includes(k));
+function dash(){
+const todaySales=sum(S.filter(x=>x[1]==TODAY),3),todayPur=sum(PU.filter(x=>x[1]==TODAY),3),lw=P.filter(p=>p[2]<p[3]);
+const receivable=S.reduce((t,x)=>t+Math.max(0,bal(x)),0),payable=PU.reduce((t,x)=>t+Math.max(0,bal(x)),0),cashCollected=sum(S,4);
+const moneyCats=[["Cash Collected",cashCollected,"#0b8457"],["Customer Receivable",receivable,"#f59e0b"],["Supplier Payable",payable,"#e0568a"]],moneyTotal=moneyCats.reduce((t,x)=>t+x[1],0)||1;
+let moneyAngle=0;const moneyGrad=moneyCats.map(x=>{const from=moneyAngle;moneyAngle+=x[1]/moneyTotal*360;return`${x[2]} ${from}deg ${moneyAngle}deg`}).join(",");
+const days=["19","20","21","22","23","24","25"].map(d=>[d,d=="25"?todaySales:HIST[d]]),mx=Math.max(...days.map(d=>d[1]),1);
+const sc=[["Total Products",P.length,"Active Products","#0b8457","products"],["Total Sales (Today)",R(todaySales),"Sales recorded today","#2f7cf6","sales"],["Total Purchase (Today)",R(todayPur),"Purchases today","#8a5cf0","purchase"],["Low Stock Items",lw.length,"Need Restock","#f59e0b","stock"]];
+return hd("Welcome Back, Admin","Here's what's happening with your fertilizer shop today.",`<div style="display:flex;gap:10px;flex-wrap:wrap"><div class="date">Thu, 25 Sep 2025</div><button class="btn p" onclick="openTx('S')">New Sale</button></div>`)+
+`<div class="grid4">${sc.map(s=>`<div class="card stat" onclick="go('${s[4]}')"><div class="bar" style="background:${s[3]}"></div><div><small>${s[0]}</small><b>${s[1]}</b><small class="mu">${s[2]}</small></div></div>`).join("")}</div>
+<div class="row2"><div class="card ov"><h2>Sales Overview</h2><small class="mu">Last 7 Days</small><div class="bars">${days.map(d=>`<div class="b" style="height:${d[1]/mx*100}%" title="${R(d[1])}"><span>${d[0]} Sep</span></div>`).join("")}</div></div>
+<div class="card cat"><h2>Money Position</h2><small class="mu">Cash and outstanding balances</small><div class="donutw"><div class="donut" style="background:conic-gradient(${moneyGrad})"><div><span><b>${R(moneyTotal)}</b>Total</span></div></div><div class="leg">${moneyCats.map(x=>`<p><i class="dot" style="background:${x[2]}"></i><span>${x[0]}</span>${R(x[1])}</p>`).join("")}</div></div><p class="mu" style="margin:18px 0 0;font-size:12px">Open the Customer or Supplier Ledger for full statements.</p></div>
+<div class="card rec"><div style="display:flex;justify-content:space-between"><h2>Recent Sales</h2><a class="lk" onclick="go('sales')">View All</a></div>
+${S.slice(0,5).map(s=>`<div class="li"><div><b>${s[0]}</b><small class="mu">${fd(s[1])} - ${s[2]}</small></div><span class="amt">${R(s[3])}</span></div>`).join("")}</div>
+<div class="card low"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><h2>Low Stock Alerts</h2><a class="lk" onclick="go('stock')">View All</a></div>
+${lw.length?tbl(["Product Name","Current Stock","Minimum Level","Status"],lw.map(p=>[p[0],`<b style="color:var(--c)">${p[2]}</b>`,p[3],pill(...pst(p))])):'<p class="mu">All products are well stocked.</p>'}</div></div>`}
+function prods(){const k=q.value.toLowerCase(),L=P.map((p,i)=>[p,i]).filter(x=>x[0][0].toLowerCase().includes(k));
+return hd("Products","Manage your fertilizer products and stock.",`<button class="btn p" onclick="dlg.showModal()">+ Add Product</button>`)+`<div class="card">${tbl(["Image","Product Name","Category","Stock","Price (Rs.)","Status",""],L.map(([p,i])=>[`<span class="ini">${p[0][0]}</span>`,p[0],p[1],p[2],p[4].toLocaleString(),pill(...pst(p)),`<button class="btn sm" onclick="delP(${i})">Delete</button>`]))}<p class="mu">Showing ${L.length} of ${P.length} products</p></div>`}
+function stock(){return hd("Stock Management","Track your stock levels and inventory movement.")+`<div class="card">${tbl(["Product Name","Current Stock","Unit","Min Level","Status",""],P.map(p=>[p[0],p[2],"Bags",p[3],pill(...pst(p)),`<button class="btn sm" onclick="openTx('P',${P.indexOf(p)})">Restock</button>`]))}</div>`}
+function sales(){const k=q.value.toLowerCase(),L=ft(S,k).filter(x=>sf=="All"||st(x)[0]==sf).reverse();
+return hd("Sales","View and manage your sales transactions. New sales are made from the Dashboard.")+`<div class="tools"><select onchange="sf=this.value;render()">${["All","Paid","Partial","Unpaid"].map(o=>`<option ${o==sf?"selected":""} value="${o}">${o=="All"?"All Payment Status":o}</option>`).join("")}</select></div><div class="card">${tbl(["Invoice No.","Date","Customer","Total","Paid","Balance","Due Date","Status",""],L.map(x=>{const i=S.indexOf(x);return[`<a class="lk" onclick="showInv('S',${i})">${x[0]}</a>`,fd(x[1]),x[2],R(x[3]),R(x[4]),R(bal(x)),due(x),pill(...st(x)),bal(x)>0?`<button class="btn sm" onclick="openPay('S',${i})">Receive</button>`:""]}))}<p class="mu">Showing ${L.length} of ${S.length} sales</p></div>`}
+function purch(){const k=q.value.toLowerCase(),L=ft(PU,k).reverse();
+return hd("Purchase","Manage your purchase orders and supplier bills.",`<button class="btn p" onclick="openTx('P')">+ New Purchase</button>`)+`<div class="card">${tbl(["Invoice No.","Date","Supplier","Total","Paid","Balance","Due Date","Status",""],L.map(x=>{const i=PU.indexOf(x);return[`<a class="lk" onclick="showInv('P',${i})">${x[0]}</a>`,fd(x[1]),x[2],R(x[3]),R(x[4]),R(bal(x)),due(x),pill(bal(x)>0?st(x)[0]:"Received",bal(x)>0?st(x)[1]:"ok"),bal(x)>0?`<button class="btn sm" onclick="openPay('P',${i})">Pay</button>`:""]}))}</div>`}
+function people(t,D,T,c1,c2){
+ const k=q.value.toLowerCase();
+ return hd(t,"Manage your "+t.toLowerCase()+". Customers receive a unique ID for quick search and ledger access. Supplier records include purchase, payment, and payable ledgers.")+
+ `<div class="card">${tbl(["ID","Name","Phone",c1,c2],D.filter(d=>d[0].toLowerCase().includes(k)||String(d[2]||"").toLowerCase().includes(k)).map(d=>{
+   const r=T.filter(x=>x[2]==d[0]);return[d[2]||"",t=="Customers"?`<a class="lk" onclick="openCustomerById('${esc(d[2]||"")}')">${esc(d[0])}</a>`:t=="Suppliers"?`<a class="lk" onclick="openSupplier('${esc(d[0])}')">${esc(d[0])}</a>`:esc(d[0]),esc(d[1]),R(sum(r,3)),`<b style="color:${sum(r,3)-sum(r,4)>0?"var(--c)":"inherit"}">${R(sum(r,3)-sum(r,4))}</b>`]
+ }))}</div>`
+}
+function sett(){return hd("Settings","Manage your shop profile, login and data.")+`<div class="card" style="margin-bottom:14px"><h2>Shop Profile and Login</h2><div class="frm"><div><label>Shop name</label><input id="sname" value="${esc(cfg.name)}"></div><div><label>Shop logo</label><input id="slogo" type="file" accept="image/*" onchange="setLogo(this.files[0])"></div><div><label>Shop phone</label><input id="sphone" value="${esc(cfg.phone||"")}"></div><div><label>Shop email</label><input id="semail" value="${esc(cfg.email||"")}"></div><div><label>Shop address</label><input id="saddr" value="${esc(cfg.address||"")}"></div><div><label>Username</label><input id="suser" value="${esc(cfg.user)}"></div><div><label>New password (leave blank to keep)</label><input id="spass" type="password"></div></div><div class="acts"><button class="btn p" onclick="saveCfg()">Save Settings</button></div></div><div class="card" style="margin-bottom:14px"><h2>Appearance</h2><div class="tabs" style="margin-top:10px"><span class="btn" onclick="th('light')">Light</span></div></div><div class="card"><h2>Data</h2><p class="mu">Export everything to Excel, or reset to the sample data.</p><div class="acts" style="justify-content:flex-start"><button class="btn p" onclick="exportXls()">Export to Excel</button><button class="btn" onclick="resetData()">Reset Data</button></div></div>`}
+const th=t=>{document.documentElement.dataset.theme='light';};
+document.documentElement.dataset.theme='light';
+function delP(i){if(confirm("Delete "+P[i][0]+"?")){P.splice(i,1);render()}}
+function addP(){if(!n.value.trim())return;P.push([n.value.trim(),c.value.trim()||"Other",+s.value||0,+mn.value||0,+p.value||0,+cp.value||0]);dlg.close();n.value=c.value="";render()}
+/* transactions */
+function openTx(m,pi){
+  mode=m;cart=[];cropCart=[];const S_=m=="S";
+  txt.textContent=S_?"New Sale":"New Purchase";pl.textContent=S_?"Customer":"Supplier";
+  dl.innerHTML=(S_?CU:SU).map(x=>`<option value="${x[0]}">${x[2]||""}</option>`).join("");
+  pn.value=ph.value="";pn.placeholder=S_?"Walk-in Customer or type a new name":"Select or type a new supplier";
+  ps.innerHTML=P.map((p,i)=>`<option value="${i}">${p[0]} (${p[2]} in stock)</option>`).join("");
+  if(pi!=null)ps.value=pi;pq.value=1;pm.value="f";err.textContent="";setPr();lin();pmC();renderCrops();updateSettlement();tx.showModal()
+}
+function setPr(){const p=P[+ps.value];pr.value=mode=="S"?p[4]:p[5]}
+function pmC(){
+  paw.style.display=pm.value=="p"?"":"none";duw.style.display=pm.value=="f"?"none":"";
+  if(pm.value!="f"&&!du.value){const d=new Date(TODAY);d.setDate(d.getDate()+15);du.value=d.toISOString().slice(0,10)}
+  updateSettlement()
+}
+function addL(){
+  const i=+ps.value,n2=+pq.value,pc=+pr.value;
+  if(!(n2>0)||!(pc>=0)){err.textContent="Enter valid quantity and price.";return}
+  const l=cart.find(x=>x[0]==i&&x[2]==pc);
+  if(mode=="S"&&n2+cart.filter(x=>x[0]==i).reduce((t,x)=>t+x[1],0)>P[i][2]){err.textContent="Only "+P[i][2]+" in stock.";return}
+  err.textContent="";l?l[1]+=n2:cart.push([i,n2,pc]);lin();updateSettlement()
+}
+const tt=()=>cart.reduce((a,l)=>a+l[1]*l[2],0);
+function lin(){
+  lines.innerHTML=cart.map((l,k)=>`<div class="li"><div><b>${P[l[0]][0]}</b><small class="mu">${l[1]} x ${R(l[2])}</small></div><span class="amt">${R(l[1]*l[2])}</span><a class="lk" onclick="cart.splice(${k},1);lin();updateSettlement()">Remove</a></div>`).join("")||'<p class="mu">No items added yet.</p>';
+  tot.textContent=R(tt())
+}
+function addCrop(){
+  if(mode!="S")return;
+  const type=document.getElementById("ct").value.trim(),price=+document.getElementById("cpv").value,qty=+document.getElementById("cq").value;
+  if(!type||!(price>0)||!(qty>0)){document.getElementById("cerr").textContent="Enter crop type, rate and quantity.";return}
+  cropCart.push({type,price,qty,amount:price*qty});document.getElementById("cerr").textContent="";renderCrops();updateSettlement()
+}
+function renderCrops(){
+  const w=document.getElementById("cropSection"); if(!w)return;
+  w.style.display=mode=="S"?"":"none";
+  const l=document.getElementById("cropLines"); if(!l)return;
+  l.innerHTML=cropCart.map((c,i)=>`<div class="li"><div><b>${esc(c.type)}</b><small class="mu">${c.qty} × ${R(c.price)} = ${R(c.amount)}</small></div><span class="amt">${R(c.amount)}</span><a class="lk" onclick="cropCart.splice(${i},1);renderCrops();updateSettlement()">Remove</a></div>`).join("")||'<p class="mu">No crops credited.</p>';
+}
+function cropTotal(){return cropCart.reduce((a,c)=>a+c.amount,0)}
+function updateSettlement(){
+  const total=tt(),cash=pm.value=="f"?total:(+pa.value||0),crop=cropTotal(),settled=cash+crop,balance=Math.max(0,total-settled),refund=Math.max(0,settled-total);
+  const el=document.getElementById("settle");if(el)el.innerHTML=`<div class="li"><div>Cash paid now</div><span class="amt">${R(cash)}</span></div><div class="li"><div>Crop value credited</div><span class="amt">${R(crop)}</span></div><div class="li"><div><b>${refund?"Cash/Credit to return":"Balance remaining"}</b></div><span class="amt"><b>${R(refund||balance)}</b></span></div>`;
+}
+function fin(g){
+  const T=tt();if(!cart.length){err.textContent="Add at least one item.";return}
+  const S_=mode=="S";let name=pn.value.trim()||(S_?"Walk-in Customer":"");
+  if(!name){err.textContent="Enter "+(S_?"customer":"supplier")+" name.";return}
+  const cash=pm.value=="f"?T:+pa.value||0,crop=S_?cropTotal():0,settled=cash+crop;
+  if(pm.value=="p"&&!(cash>0&&settled<T)){err.textContent="Cash paid must be more than 0 and total settlement must not clear the sale.";return}
+  if(pm.value=="l"&&settled>0){err.textContent="For Pay later, use zero cash/crop or choose Partial.";return}
+  if(settled<T&&!du.value){err.textContent="Choose the due date for the remaining amount.";return}
+  const D=S_?CU:SU;
+  let party=D.find(x=>x[0].toLowerCase()==name.toLowerCase());
+  if(!party&&name!="Walk-in Customer"){party=[name,fmtPh(ph.value)||"-",nextCustomerId()];D.push(party)}
+  if(party&&S_&&ph.value.trim()&&(!party[1]||party[1]=="-"))party[1]=fmtPh(ph.value);
+  const items=cart.map(l=>[P[l[0]][0],l[1],l[2],S_?P[l[0]][5]:l[2]]);
+  cart.forEach(l=>{P[l[0]][2]+=S_?-l[1]:l[1];if(!S_)P[l[0]][5]=l[2]});
+  const paid=Math.min(T,settled),remaining=Math.max(0,T-settled),refund=Math.max(0,settled-T);
+  const rec=[S_?"INV-"+sN++:"PUR-"+pN++,TODAY,name,T,paid,remaining?du.value:"",items,[],S_?cropCart.map(c=>({...c,date:TODAY})):[],refund];
+  (S_?S:PU).unshift(rec);tx.close();save();render();if(g)showInv(mode,0)
+}
+function openPay(k,i){
+  payK=k;payI=i;const x=(k=="S"?S:PU)[i];pinfo.textContent=x[0]+" - "+x[2]+" - Balance "+R(bal(x));pamt.value=bal(x);pdue.value=x[5]||"";perr.textContent="";pay.showModal()
+}
+function savePay(){
+  const x=(payK=="S"?S:PU)[payI],a=+pamt.value;
+  if(!(a>0)||a>bal(x)){perr.textContent="Enter an amount up to "+R(bal(x))+".";return}
+  x[4]+=a;
+  if(!x[7])x[7]=[];
+  x[7].push([TODAY,a]);
+  if(bal(x)>0){if(!pdue.value){perr.textContent="Choose next due date.";return}x[5]=pdue.value}else x[5]="";
+  pay.close();save();render()
+}
+function customerId(name){const c=CU.find(x=>x[0]==name);return c?(c[2]||""):""}
+function nextCustomerId(){
+  let max=0;CU.forEach(c=>{const n=+(String(c[2]||"").match(/(\d+)$/)||[0,0])[1];max=Math.max(max,n)});
+  return "CUS-"+String(max+1).padStart(4,"0")
+}
+function normalizeCustomers(){
+  let max=0;CU.forEach(c=>{const n=+(String(c[2]||"").match(/(\d+)$/)||[0,0])[1];max=Math.max(max,n)});
+  CU.forEach(c=>{if(!c[2])c[2]="CUS-"+String(++max).padStart(4,"0");c[1]=fmtPh(c[1])||"-"});SU.forEach(c=>{c[1]=fmtPh(c[1])||"-"});
+}
+function dateRange(D){
+  return D.filter(x=>(!reportFrom||x[1]>=reportFrom)&&(!reportTo||x[1]<=reportTo))
+}
+function rangeControls(){
+  const dates=[...S,...PU].map(x=>x[1]).sort();const min=dates[0]||TODAY,max=dates.at(-1)||TODAY;
+  return `<div class="card rangebox"><div class="frm"><div><label>From date</label><input id="rf" type="date" value="${reportFrom||min}" min="${min}" max="${max}"></div><div><label>To date</label><input id="rt" type="date" value="${reportTo||max}" min="${min}" max="${max}"></div></div><div class="acts" style="justify-content:flex-start"><button class="btn p" onclick="applyRange()">Generate Report</button><button class="btn" onclick="clearRange()">All Dates</button></div><p class="mu" style="margin-bottom:0">Reports and Excel exports use the selected date range.</p></div>`
+}
+function applyRange(){
+  reportFrom=document.getElementById("rf").value;reportTo=document.getElementById("rt").value;
+  if(reportFrom&&reportTo&&reportFrom>reportTo){alert("From date cannot be after To date.");return}
+  render()
+}
+function clearRange(){reportFrom="";reportTo="";render()}
+function reps(){
+  const tb=["Sales Report","Purchase Report","Stock Report","Profit & Loss"];
+  const RS=dateRange(S),RP=dateRange(PU),ts=sum(RS,3),tp=sum(RP,3),gp=RS.reduce((a,x)=>a+prof(x),0);
+  const cd=a=>`<div class="grid4" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">${a.map(c=>`<div class="card"><small class="mu">${c[0]}</small><b style="font-size:22px;display:block">${c[1]}</b></div>`).join("")}</div>`;
+  let b;
+  if(tab=="Sales Report")b=cd([["Total Sales",R(ts)],["Received",R(sum(RS,4))],["Receivable",R(RS.reduce((a,x)=>a+bal(x),0))],["Gross Profit",R(gp)]])+`<div class="card">${tbl(["Invoice","Date","Customer","Total","Balance"],RS.map(x=>[x[0],fd(x[1]),x[2],R(x[3]),R(bal(x))]))}</div>`;
+  else if(tab=="Purchase Report")b=cd([["Total Purchase",R(tp)],["Paid",R(sum(RP,4))],["Payable",R(RP.reduce((a,x)=>a+bal(x),0))]])+`<div class="card">${tbl(["Invoice","Date","Supplier","Total","Balance"],RP.map(x=>[x[0],fd(x[1]),x[2],R(x[3]),R(bal(x))]))}</div>`;
+  else if(tab=="Stock Report")b=cd([["Items in stock",sum(P,2)],["Stock value (at sale price)",R(P.reduce((t,p)=>t+p[2]*p[4],0))]])+`<div class="card">${tbl(["Product","Stock","Price","Value"],P.map(p=>[p[0],p[2],R(p[4]),R(p[2]*p[4])]))}</div>`;
+  else b=cd([["Total Sales",R(ts)],["Cost of goods sold",R(ts-gp)],["Gross Profit",R(gp)],["Total Purchase",R(tp)]])+`<div class="card">${tbl(["Invoice","Customer","Total","Profit"],RS.map(x=>[x[0],x[2],R(x[3]),R(prof(x))]))}</div>`;
+  return hd("Reports","Generate sales and purchase reports for any date range.",`<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" onclick="exportXls(true)">Export Selected Range to Excel</button><button class="btn" onclick="print()">Print / Save PDF</button></div>`)+rangeControls()+`<div class="tabs">${tb.map(t=>`<span class="btn ${t==tab?"on":""}" onclick="tab='${t}';render()">${t}</span>`).join("")}</div>`+b
+}
+function ledger(){
+  const k=q.value.trim().toLowerCase();
+  const L=CU.filter(c=>!k||c[0].toLowerCase().includes(k)||String(c[1]).toLowerCase().includes(k)||String(c[2]).toLowerCase().includes(k));
+  return hd("Customer Ledger","Search by customer name, phone, or customer ID and open the complete account.",`<button class="btn p" onclick="openReturn()">+ Record Crop Sale</button>`)+
+  `<div class="card">${tbl(["Customer ID","Customer","Phone","Total Sales","Paid","Crop Credit","Balance",""],L.map(c=>{
+    const d=customerSummary(c[0]);return[c[2],`<a class="lk" onclick="openCustomerById('${esc(c[2]||"")}')">${esc(c[0])}</a>`,esc(c[1]),R(d.total),R(d.paid),R(d.crop),`<b style="color:${d.balance>0?"var(--c)":"var(--ok)"}">${d.balance<0?R(-d.balance)+" (payable)":R(d.balance)}</b>`,`<div style="display:flex;gap:6px;align-items:center"><button class="btn sm" onclick="openCustomerById('${esc(c[2]||"")}')">Open Ledger</button><button class="btn sm wabtn" title="WhatsApp: payment reminder / send ledger PDF" onclick="openWA('${esc(c[2]||"")}')">${WAI}</button></div>`]
+  }))}</div>`
+}
+function customerSummary(name){
+  const a=S.filter(x=>x[2]==name),rr=returns.filter(r=>r.customer==name),pp=custPay.filter(p=>p.customer==name);
+  const crop=a.reduce((t,x)=>t+(x[8]||[]).reduce((z,c)=>z+c.amount,0),0),returned=rr.reduce((t,r)=>t+(+r.value||0),0),paidOut=pp.reduce((t,p)=>t+(+p.amount||0),0);
+  return {total:sum(a,3),paid:sum(a,4),crop,returned,paidOut,balance:a.reduce((t,x)=>t+bal(x),0)-returned+paidOut}
+}
+function openCustomerById(id){
+  const c=CU.find(x=>String(x[2]||"")==String(id));
+  if(c) openCustomer(c[2]); else if(CU.length) openCustomer(CU[0][2]);
+}
+function editCustomer(id){const c=CU.find(x=>String(x[2])==String(id));if(!c)return;ceid.value=c[2];cename.value=c[0];cephone.value=c[1]||"";ceerr.textContent="";cedit.showModal()}
+function saveCustomerEdit(){const c=CU.find(x=>String(x[2])==String(ceid.value)),name=cename.value.trim();if(!c||!name){ceerr.textContent="Enter a customer name.";return}if(CU.some(x=>x!==c&&x[0].toLowerCase()==name.toLowerCase())){ceerr.textContent="That customer already exists.";return}const old=c[0];c[0]=name;c[1]=fmtPh(cephone.value)||"-";S.forEach(x=>{if(x[2]==old)x[2]=name});returns.forEach(r=>{if(r.customer==old)r.customer=name});custPay.forEach(r=>{if(r.customer==old)r.customer=name});cedit.close();save();render();openCustomer(c[2])}
+function cropCtx(){const qty=+retqty.value||0,rate=+retrate.value||0,total=qty*rate,c=CU.find(x=>String(x[2])==String(retid.value));return{total,pending:Math.max(0,c?customerSummary(c[0]).balance:0)}}
+function updateCropSale(){
+  const{total,pending}=cropCtx(),o=retopt.value,d=Math.min(pending,total);
+  if(o!="5"){const D=o=="1"||o=="2"?d:0;retded.value=D||"";retpaynow.value=(o=="1"?total-D:o=="3"?total:0)||""}
+  cropShow()
+}
+function cropDed(){const{total}=cropCtx(),D=+retded.value||0;retopt.value="5";retpaynow.value=Math.max(0,total-D)||"";cropShow()}
+function cropShow(){
+  const{total,pending}=cropCtx(),D=+retded.value||0,Pn=+retpaynow.value||0,K=total-D-Pn;rettotal.textContent=R(total);retrem.value=Math.max(0,K)||"";
+  cropSettlement.innerHTML=`<div class="li"><div>Total crop value</div><span class="amt">${R(total)}</span></div><div class="li"><div>Less: deduction from pending balance (Rs. ${pending.toLocaleString("en-US")} owed)</div><span class="amt">- ${R(D)}</span></div><div class="li"><div><b>Balance to pay customer</b></div><span class="amt"><b>${R(Math.max(0,total-D))}</b></span></div><div class="li"><div>Paid to customer now</div><span class="amt">${R(Pn)}</span></div><div class="li"><div>${K<0?"<b style='color:var(--c)'>Paying more than the balance - fix amounts</b>":"Still to pay later"}</div><span class="amt">${R(Math.abs(K))}</span></div><div class="li"><div>Customer account after this</div><span class="amt">${pending-total+Pn>=0?R(pending-total+Pn)+" owed by customer":R(-(pending-total+Pn))+" payable to customer"}</span></div>`
+}
+function openReturn(id){const c=CU.find(x=>String(x[2])==String(id||ledgerCustomer))||CU[0];if(!c)return;retid.value=c[2];retparty.textContent="Customer: "+c[0];retdate.value=TODAY;retdesc.value="";retqty.value=1;retrate.value="";retnotes.value="";retopt.value="1";reterr.textContent="";updateCropSale();ret.showModal()}
+function saveReturn(){
+  const c=CU.find(x=>String(x[2])==String(retid.value)),desc=retdesc.value.trim(),qty=+retqty.value,rate=+retrate.value,total=qty*rate;
+  if(!c||!desc||!(qty>0)||!(rate>0)){reterr.textContent="Enter crop name, quantity, and rate.";return}
+  const{pending}=cropCtx(),D=+retded.value||0,Pn=+retpaynow.value||0,mx=Math.min(pending,total);
+  if(D<0||Pn<0||D>mx+.001){reterr.textContent="Deduction can be at most "+R(mx)+" (customer's pending balance).";return}
+  if(D+Pn>total+.001){reterr.textContent="Deduction + payment cannot be more than the crop value.";return}
+  const id="CROP-"+String(returns.length+1).padStart(4,"0"),dt=retdate.value||TODAY;
+  returns.push({id,customer:c[0],date:dt,desc,qty,rate,value:total,applied:D,payout:Pn,credit:total-D-Pn,notes:retnotes.value.trim()});
+  if(Pn>0)custPay.push({id:"PAY-"+String(custPay.length+1).padStart(4,"0"),customer:c[0],date:dt,amount:Pn,note:"Paid for "+id});
+  ret.close();save();render();openCustomer(c[2])
+}
+
+/* ===== WhatsApp: payment reminder / ledger PDF ===== */
+const waNum=v=>{let d=String(v||"").replace(/\D/g,"");if(d.startsWith("0"))d="92"+d.slice(1);return d.length>=11?d:""};
+function waText(c){
+  const d=customerSummary(c[0]),b=d.balance,ds=S.filter(x=>x[2]==c[0]&&bal(x)>0&&x[5]).map(x=>x[5]).sort()[0];
+  if(b>0)return `Assalam o Alaikum ${c[0]},\nThis is a friendly payment reminder from ${cfg.name}.\nYour pending balance is ${R(b)}${ds?" (due "+fd(ds)+")":""}.\nKindly arrange the payment at your earliest convenience.\nThank you.`;
+  if(b<0)return `Assalam o Alaikum ${c[0]},\nFrom ${cfg.name}: after adjusting your crop sale, an amount of ${R(-b)} is payable to you. Please contact us to receive it.\nThank you.`;
+  return `Assalam o Alaikum ${c[0]},\nYour account with ${cfg.name} is fully settled. Please find your ledger statement attached.\nThank you.`;
+}
+function openWA(id){
+  const c=CU.find(x=>x[2]==id);if(!c)return;const n=waNum(c[1]);
+  wab.innerHTML=`<h2 style="display:flex;gap:10px;align-items:center"><span class="wabtn" style="padding:6px;border-radius:10px">${WAI}</span>WhatsApp - ${esc(c[0])}</h2><p class="mu" style="margin:6px 0">${n?"Sending to "+esc(c[1]):"No valid phone number saved - you can pick the contact in WhatsApp, or add the number via Edit Customer."}</p><label>Message</label><textarea id="watxt"></textarea><p class="mu" id="wahint" style="font-size:12px;margin:8px 0 0">Reminder opens a WhatsApp chat with this message. Ledger PDF opens your phone's share sheet (choose WhatsApp); on a computer the PDF is downloaded and the chat opens so you can attach it.</p><div class="acts"><button class="btn" onclick="wad.close()">Cancel</button><button class="btn wabtn" onclick="waSend('${esc(id)}',0)">${WAI} Send Payment Reminder</button><button class="btn wabtn" onclick="waSend('${esc(id)}',1)">${WAI} Send Ledger PDF</button></div>`;
+  watxt.value=waText(c);wad.showModal()
+}
+function waSend(id,pdf){
+  const c=CU.find(x=>x[2]==id),n=waNum(c[1]),msg=watxt.value,url="https://wa.me/"+n+"?text="+encodeURIComponent(msg);
+  if(!pdf){window.open(url,"_blank");return}
+  const name=id+"_ledger.pdf",blob=pdfBlob(docUrls(ledSpec(id))),f=new File([blob],name,{type:"application/pdf"});
+  if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],text:msg,title:"Customer Ledger"}).catch(()=>{});return}
+  dl(blob,name);wahint.textContent="PDF downloaded. WhatsApp is opening - attach the downloaded file in the chat and send.";window.open(url,"_blank")
+}
+/* ===== Template documents: one canvas renderer -> preview, PDF, print ===== */
+const DW=1024,DH=1448,DS=1.5,FF='"DejaVu Serif",Georgia,"Times New Roman",serif',N=n=>(Math.round(n)<0?"-":"")+Math.abs(Math.round(n)).toLocaleString("en-US");
+let invDoc,custDoc;
+function renderDoc(d){
+ const pg=[],fs=d.fs||20,lh=d.fs?d.fs+5:24,pd=d.pad||13;let c,x,y;
+ const np=()=>{c=document.createElement("canvas");c.width=DW*DS;c.height=DH*DS;x=c.getContext("2d");x.scale(DS,DS);x.fillStyle="#fff";x.fillRect(0,0,DW,DH);x.textBaseline="middle";pg.push(c)};
+ const T=(s,px,py,o={})=>{x.font=(o.b?"bold ":"")+(o.s||20)+"px "+FF;x.fillStyle=o.c||"#111";x.textAlign=o.a||"left";x.fillText(String(s),px,py)};
+ const L=(y0,x0=60)=>{x.fillStyle="#cfcfcf";x.fillRect(x0,y0,960-x0,1.5)};
+ const bar=(x0,y0,w)=>{x.fillStyle="#cbcbcb";x.beginPath();x.roundRect?x.roundRect(x0,y0,w,46,9):x.rect(x0,y0,w,46);x.fill()};
+ const wrap=(s,w)=>{x.font=fs+"px "+FF;const o=[];let l="";String(s).split(" ").forEach(t=>{const m=l?l+" "+t:t;if(l&&x.measureText(m).width>w){o.push(l);l=t}else l=m});o.push(l);return o};
+ np();
+ x.font="bold 44px "+FF;x.fillStyle="#111";x.textAlign="left";let sx=66;for(const ch of d.title){x.fillText(ch,sx,72);sx+=x.measureText(ch).width+5}
+ T(d.shop,953,66,{s:32,b:1,a:"right"});d.shopLines.forEach((s,i)=>T(s,953,101+i*26,{s:18,c:"#444",a:"right"}));
+ L(154);
+ T(d.lbl,60,183,{c:"#777"});T(d.name,60,216,{s:26,b:1});d.lines.forEach((s,i)=>T(s,60,247+i*26,{s:18,c:"#444"}));
+ bar(600,165,360);T(d.box.h[0],613,188,{s:21,b:1});T(d.box.h[1],947,188,{s:21,b:1,a:"right"});
+ let by=211;d.box.rows.forEach((r,i,a)=>{const b=i==a.length-1;T(r[0],604,by+23,{b});T(r[1],956,by+23,{a:"right",b});by+=47;if(!b)L(by-1,600)});
+ y=Math.max(247+26*d.lines.length,by)+34;
+ const cx=[];let ax=60;d.cols.forEach(k=>{cx.push(ax);ax+=k.w});
+ const ox=(k,i)=>k.a=="r"?cx[i]+k.w-pd:k.a=="c"?cx[i]+k.w/2:cx[i]+pd,al=k=>k.a=="r"?"right":k.a=="c"?"center":"left";
+ const head=()=>{bar(60,y,900);d.cols.forEach((k,i)=>T(k.h,ox(k,i),y+23,{s:fs+1,b:1,a:al(k)}));y+=46};
+ head();
+ d.rows.forEach(r=>{
+  const ls=d.cols.map((k,i)=>k.wrap?wrap(r[i],k.w-pd*2):[String(r[i])]),n=Math.max(...ls.map(a=>a.length)),h=Math.max(42,n*lh+10);
+  if(y+h>DH-80){np();y=60;head()}
+  d.cols.forEach((k,i)=>{const a=ls[i];a.forEach((s,j)=>T(s,ox(k,i),y+h/2-(a.length-1)*lh/2+j*lh,{s:fs,a:al(k)}))});
+  y+=h;L(y-1)});
+ if(d.sum){if(y+46>DH-80){np();y=60}d.cols.forEach((k,i)=>{if(d.sum[i]!=="")T(d.sum[i],ox(k,i),y+23,{s:fs+1,b:1,a:al(k)})});y+=46;L(y-1)}
+ y+=22;if(y+d.tot.length*48>DH-60){np();y=60}
+ d.tot.forEach((r,i,a)=>{const b=i==a.length-1;T(r[0],604,y+24,{b});T(r[1],956,y+24,{a:"right",b});y+=48;if(!b)L(y-1,600)});
+ if(d.foot)T(d.foot,60,y+24,{s:15,c:"#777"});
+ if(pg.length>1)pg.forEach((c,i)=>{const g=c.getContext("2d");g.font="15px "+FF;g.fillStyle="#777";g.textAlign="center";g.textBaseline="middle";g.fillText("Page "+(i+1)+" of "+pg.length,DW/2,DH-30)});
+ return pg
+}
+const docUrls=d=>renderDoc(d).map(c=>c.toDataURL("image/jpeg",.92)),docHtml=u=>`<div class="docs">${u.map(s=>`<img src="${s}" alt="">`).join("")}</div>`;
+function pdfBlob(urls){
+ const en=new TextEncoder(),ps=[],of=[];let ln=0;
+ const A=b=>{if(typeof b=="string")b=en.encode(b);ps.push(b);ln+=b.length};
+ const O=(n,s,bin)=>{of[n]=ln;A(n+" 0 obj\n"+s);if(bin){A("\nstream\n");A(bin);A("\nendstream")}A("\nendobj\n")};
+ const im=urls.map(u=>{const b=atob(u.split(",")[1]),a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a});
+ const n=im.length,pw=595.28,ph=841.89;A("%PDF-1.4\n");
+ O(1,"<</Type/Catalog/Pages 2 0 R>>");
+ O(2,`<</Type/Pages/Count ${n}/Kids[${im.map((_,i)=>(3+3*i)+" 0 R").join(" ")}]>>`);
+ im.forEach((a,i)=>{const p=3+3*i,cs=`q ${pw} 0 0 ${ph} 0 0 cm /Im0 Do Q`;
+  O(p,`<</Type/Page/Parent 2 0 R/MediaBox[0 0 ${pw} ${ph}]/Resources<</XObject<</Im0 ${p+2} 0 R>>>>/Contents ${p+1} 0 R>>`);
+  O(p+1,`<</Length ${cs.length}>>`,cs);
+  O(p+2,`<</Type/XObject/Subtype/Image/Width ${DW*DS}/Height ${DH*DS}/ColorSpace/DeviceRGB/BitsPerComponent 8/Filter/DCTDecode/Length ${a.length}>>`,a)});
+ const xr=ln,tot=3+3*n;let t="xref\n0 "+tot+"\n0000000000 65535 f \n";for(let i=1;i<tot;i++)t+=String(of[i]).padStart(10,"0")+" 00000 n \n";
+ A(t+`trailer\n<</Size ${tot}/Root 1 0 R>>\nstartxref\n${xr}\n%%EOF`);
+ return new Blob(ps,{type:"application/pdf"})
+}
+function dl(b,n){const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=n;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
+const savePdf=(d,n)=>dl(pdfBlob(docUrls(d)),n.replace(/[^\w.-]+/g,"_"));
+function printDoc(d){const e=document.createElement("div");e.id="prx";e.innerHTML=docUrls(d).map(s=>`<img src="${s}">`).join("");document.body.appendChild(e);document.body.classList.add("pr");
+ const done=()=>{e.remove();document.body.classList.remove("pr");removeEventListener("afterprint",done)};addEventListener("afterprint",done);setTimeout(()=>print(),150)}
+const shopLines=()=>[cfg.email,cfg.phone,cfg.address].filter(Boolean);
+function invSpec(k,i){
+ const x=(k=="S"?S:PU)[i],S_=k=="S",it=Array.isArray(x[6])&&x[6].length?x[6]:[["Assorted fertilizer items",1,x[3]]],cr=(Array.isArray(x[8])?x[8]:[]).reduce((a,c)=>a+c.amount,0),pty=(S_?CU:SU).find(z=>z[0]==x[2]),b=Math.max(0,bal(x)),ret=x[10]>0,due=ret?x[10]:b,sub=it.reduce((a,l)=>a+l[1]*l[2],0);
+ return{title:S_?"INVOICE":"PURCHASE INVOICE",shop:cfg.name,shopLines:shopLines(),lbl:S_?"Bill To:":"Supplier:",name:x[2],
+ lines:[S_&&pty&&pty[2]?"Customer ID: "+pty[2]:"",pty&&pty[1]&&pty[1]!="-"?pty[1]:""].filter(Boolean),
+ box:{h:["Invoice","#"+x[0]],rows:[["Issued Date:",fd(x[1])],...(b>0&&x[5]?[["Due Date:",fd(x[5])]]:[]),[ret?"Payable to Customer:":"Balance Due:",R(due)]]},
+ cols:[{h:"Items",w:540,a:"l",wrap:1},{h:"QTY",w:100,a:"c"},{h:"Price",w:130,a:"l"},{h:"Total",w:130,a:"r"}],
+ rows:it.map(l=>[l[0],l[1],R(l[2]),R(l[1]*l[2])]),sum:["Total Amount","","",R(x[3])],
+ tot:[["Subtotal:",R(sub)],...(cr?[["Crop Credit:","- "+R(cr)]]:[]),["Paid:",R(x[4]||0)],[ret?"Payable:":"Balance Due:",R(due)]],foot:"Thank you for your business."}
+}
+function showInv(k,i){
+ const x=(k=="S"?S:PU)[i];invDoc={s:invSpec(k,i),n:x[0]+".pdf"};
+ invb.innerHTML=docHtml(docUrls(invDoc.s))+`<div class="acts"><button class="btn" onclick="inv.close()">Close</button><button class="btn" onclick="savePdf(invDoc.s,invDoc.n)">Save PDF</button><button class="btn p" onclick="printDoc(invDoc.s)">Print</button></div>`;inv.showModal()
+}
+const itemRows=(x,lbl)=>Array.isArray(x[6])&&x[6].length?x[6].map(l=>({date:x[1],ref:x[0],desc:`${l[0]} (${l[1]} x ${R(l[2])})`,debit:l[1]*l[2],credit:0})):[{date:x[1],ref:x[0],desc:lbl,debit:x[3],credit:0}];
+const stmtSum=(rows,b)=>["Total Amount","","",N(rows.reduce((t,r)=>t+r.debit,0)),N(rows.reduce((t,r)=>t+r.credit,0)),N(b)];
+function stmtRows(rows){let run=0;return rows.length?rows.map(r=>[fd(r.date),r.ref,r.desc,r.debit?N(r.debit):"-",r.credit?N(r.credit):"-",N(run+=r.debit-r.credit)]):[["-","-","No transactions","-","-","0"]]}
+const stmtCols=b=>[{h:"Date",w:120,a:"l"},{h:"Reference",w:110,a:"l"},{h:"Description",w:290,a:"l",wrap:1},{h:"Debit",w:126,a:"r"},{h:"Credit",w:127,a:"r"},{h:b,w:127,a:"r"}];
+function ledSpec(id){
+ const c=CU.find(x=>x[2]==id),a=S.filter(x=>x[2]==c[0]),d=customerSummary(c[0]),rows=[],b=d.balance;
+ a.forEach(x=>{rows.push(...itemRows(x,"Sale"));const p0=x[4]-(x[7]||[]).reduce((t,p)=>t+p[1],0);if(p0>0)rows.push({date:x[1],ref:x[0],desc:"Cash paid at sale",debit:0,credit:p0});(x[7]||[]).forEach(p=>rows.push({date:p[0],ref:x[0],desc:"Cash payment",debit:0,credit:p[1]}));(x[8]||[]).forEach(z=>rows.push({date:z.date||x[1],ref:x[0],desc:`Crop: ${z.type} (${z.qty} x ${R(z.price)})`,debit:0,credit:z.amount}))});
+ returns.filter(r=>r.customer==c[0]).forEach(r=>rows.push({date:r.date,ref:r.id,desc:`Crop sale: ${r.desc}${r.qty&&r.rate?` (${r.qty} x ${R(r.rate)})`:""}`,debit:0,credit:+r.value||0}));
+ custPay.filter(p=>p.customer==c[0]).forEach(p=>rows.push({date:p.date,ref:p.id,desc:"Paid to customer",debit:p.amount,credit:0}));
+ rows.sort((x,y)=>x.date.localeCompare(y.date)||x.ref.localeCompare(y.ref));
+ const lab=b<0?"Payable to Customer:":b>0?"Balance Due:":"Balance:",bl=b<0?"Payable:":b>0?"Balance Due:":"Balance:";
+ return{title:"CUSTOMER LEDGER",shop:cfg.name,shopLines:shopLines(),lbl:"Customer:",name:c[0],lines:["Customer ID: "+c[2],c[1]&&c[1]!="-"?c[1]:""].filter(Boolean),
+ box:{h:["Statement","#"+c[2]],rows:[["Statement Date:",fd(TODAY)],[bl,b==0?"Settled":R(Math.abs(b))]]},
+ cols:stmtCols("Balance"),fs:16,pad:8,rows:stmtRows(rows),sum:stmtSum(rows,b),
+ tot:[["Total Sales:",R(d.total)],["Cash Paid:",R(d.paid)],["Crop Credit:",R(d.crop+d.returned)],...(d.paidOut?[["Paid to Customer:",R(d.paidOut)]]:[]),[lab,b==0?"Settled":R(Math.abs(b))]],
+ foot:"Amounts in Rs. Debit = customer owes shop, Credit = received / deducted."}
+}
+function openCustomer(id){
+ const c=CU.find(x=>x[2]==id);if(!c)return;ledgerCustomer=c[0];
+ const d=customerSummary(c[0]),pay=-d.balance;custDoc={s:ledSpec(id),n:id+"_ledger.pdf"};
+ const box=pay>0?`<div class="card paybox" style="margin-bottom:12px"><h2>Pay Customer</h2><p class="mu" style="margin:4px 0 8px">Shop owes ${esc(c[0])} <b style="color:var(--ok)">${R(pay)}</b> after all deductions.</p><div class="frm"><div><label>Amount paid (Rs.)</label><input id="cpamt" type="number" min="1" max="${pay}" value="${pay}"></div><div><label>Payment date</label><input id="cpdate" type="date" value="${TODAY}"></div></div><div class="err" id="cperr"></div><div class="acts"><button class="btn p" onclick="payCustomer('${esc(id)}')">Mark Paid</button></div></div>`
+ :`<div class="card" style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center"><span>${d.balance>0?"Customer owes the shop":"Account status"}</span>${d.balance>0?`<b style="color:var(--c)">${R(d.balance)}</b>`:pill("Settled","ok")}</div>`;
+ custb.innerHTML=box+docHtml(docUrls(custDoc.s))+`<div class="acts ledger-actions"><button class="btn" onclick="editCustomer('${esc(id)}')">Edit Customer</button><button class="btn" onclick="openReturn('${esc(id)}')">Record Crop Sale</button><button class="btn" onclick="cust.close()">Close</button><button class="btn wabtn" onclick="openWA('${esc(id)}')">${WAI} WhatsApp</button><button class="btn" onclick="shareLedger()">Share</button><button class="btn" onclick="savePdf(custDoc.s,custDoc.n)">Save PDF</button><button class="btn p" onclick="printDoc(custDoc.s)">Print</button></div>`;
+ cust.showModal()
+}
+function payCustomer(id){
+ const c=CU.find(x=>x[2]==id),d=customerSummary(c[0]),a=+cpamt.value,dt=cpdate.value;
+ if(!(a>0)||a>-d.balance+0.001){cperr.textContent="Enter an amount up to "+R(-d.balance)+".";return}
+ if(!dt){cperr.textContent="Choose the payment date.";return}
+ custPay.push({id:"PAY-"+String(custPay.length+1).padStart(4,"0"),customer:c[0],date:dt,amount:a,note:"Paid to customer"});save();render();openCustomer(id)
+}
+async function shareLedger(){
+ try{const f=new File([pdfBlob(docUrls(custDoc.s))],custDoc.n,{type:"application/pdf"});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:"Customer Ledger"});return}}catch(e){if(e.name=="AbortError")return}
+ savePdf(custDoc.s,custDoc.n)
+}
+function supplierLedger(){const k=q.value.trim().toLowerCase(),L=SU.filter(c=>!k||c[0].toLowerCase().includes(k)||String(c[1]).includes(k));return hd("Supplier Ledger","See how much was bought, paid, and remains payable to each supplier.")+`<div class="card">${tbl(["Supplier","Phone","Total Bought","Paid","Balance Left",""],L.map(c=>{const a=PU.filter(x=>x[2]==c[0]),total=sum(a,3),paid=sum(a,4),left=a.reduce((z,x)=>z+bal(x),0);return[`<a class="lk" onclick="openSupplier('${esc(c[0])}')">${esc(c[0])}</a>`,esc(c[1]),R(total),R(paid),R(left),`<button class="btn sm" onclick="openSupplier('${esc(c[0])}')">Open Ledger</button>`]}))}</div>`}
+function openSupplier(name){
+ const c=SU.find(x=>x[0]==name);if(!c)return;const a=PU.filter(x=>x[2]==name),rows=[],left=a.reduce((z,x)=>z+bal(x),0);
+ a.forEach(x=>{rows.push(...itemRows(x,"Purchase"));const p0=x[4]-(x[7]||[]).reduce((t,p)=>t+p[1],0);if(p0>0)rows.push({date:x[1],ref:x[0],desc:"Paid at purchase",debit:0,credit:p0});(x[7]||[]).forEach(p=>rows.push({date:p[0],ref:x[0],desc:"Payment",debit:0,credit:p[1]}))});
+ rows.sort((x,y)=>x.date.localeCompare(y.date)||x.ref.localeCompare(y.ref));
+ custDoc={s:{title:"SUPPLIER LEDGER",shop:cfg.name,shopLines:shopLines(),lbl:"Supplier:",name:name,lines:[c[1]&&c[1]!="-"?c[1]:""].filter(Boolean),
+ box:{h:["Statement",fd(TODAY)],rows:[["Total Bought:",R(sum(a,3))],["Balance Payable:",R(left)]]},cols:stmtCols("Payable"),fs:16,pad:8,rows:stmtRows(rows),sum:stmtSum(rows,left),
+ tot:[["Total Bought:",R(sum(a,3))],["Total Paid:",R(sum(a,4))],["Balance Payable:",R(left)]],foot:"Amounts in Rs."},n:"Supplier_"+name+"_ledger.pdf"};
+ custb.innerHTML=docHtml(docUrls(custDoc.s))+`<div class="acts ledger-actions"><button class="btn" onclick="cust.close()">Close</button><button class="btn" onclick="savePdf(custDoc.s,custDoc.n)">Save PDF</button><button class="btn p" onclick="printDoc(custDoc.s)">Print</button></div>`;cust.showModal()
+}
+function render(){document.getElementById("nav").innerHTML=NAV.map(n=>`<a class="${n[0]==pg?"on":""}" onclick="go('${n[0]}')">${n[1]}</a>`).join("");
+const m={dashboard:dash,products:prods,stock:stock,sales:sales,purchase:purch,customers:()=>people("Customers",CU,S,"Total Sales","Balance Due"),suppliers:()=>people("Suppliers",SU,PU,"Total Purchases","Balance Payable"),reports:reps,ledger:ledger,supplierLedger:supplierLedger,settings:sett};v.innerHTML=m[pg]();save()}
+
+let cfg={name:"FertilizerPro",logo:"",user:"admin",pass:"admin123",phone:"",email:"",address:""};
+try{const D=JSON.parse(localStorage.getItem("fpro3")||"null");if(D){P=D.P;S=D.S;PU=D.PU;CU=D.CU;SU=D.SU;returns=D.returns||[];custPay=D.custPay||[];sN=D.sN;pN=D.pN;Object.assign(cfg,D.cfg)}}catch(e){}
+normalizeCustomers();
+const save=()=>{try{localStorage.setItem("fpro3",JSON.stringify({P,S,PU,CU,SU,returns,custPay,sN,pN,cfg}))}catch(e){}};
+const esc=s=>String(s).replace(/[<>&"]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"}[c]));
+const prof=x=>x[6]?x[6].reduce((a,l)=>a+l[1]*(l[2]-(l[3]??l[2]*.8)),0):x[3]*.2;
+function brand(){const h=cfg.logo?`<img src="${cfg.logo}" alt="">`:esc(cfg.name[0].toUpperCase());lg.innerHTML=llg.innerHTML=h;sn.textContent=lsn.textContent=cfg.name;document.title=cfg.name+" - Inventory & Sales System"}
+function login(e){e.preventDefault();if(lu.value.trim()==cfg.user&&lp.value==cfg.pass){try{sessionStorage.setItem("fpin","1")}catch(x){}document.body.classList.remove("lo");lp.value="";le.textContent="";render()}else le.textContent="Wrong username or password.";return false}
+function logout(){try{sessionStorage.removeItem("fpin")}catch(x){}document.body.classList.remove("nav");document.body.classList.add("lo")}
+function saveCfg(){cfg.name=sname.value.trim()||cfg.name;cfg.user=suser.value.trim()||cfg.user;cfg.phone=sphone.value.trim();cfg.email=semail.value.trim();cfg.address=saddr.value.trim();if(spass.value)cfg.pass=spass.value;save();brand();alert("Settings saved.")}
+function setLogo(f){if(!f)return;const rd=new FileReader();rd.onload=()=>{const im=new Image();im.onload=()=>{const cv=document.createElement("canvas"),k=Math.min(1,160/Math.max(im.width,im.height));cv.width=im.width*k;cv.height=im.height*k;cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);cfg.logo=cv.toDataURL("image/png");save();brand()};im.src=rd.result};rd.readAsDataURL(f)}
+function resetData(){if(confirm("Reset all data to sample data?")){try{localStorage.removeItem("fpro3")}catch(e){}location.reload()}}
+/* Excel (.xlsx) writer, no libraries */
+const crcT=(()=>{const t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+const crc=b=>{let c=-1;for(const x of b)c=crcT[(c^x)&255]^(c>>>8);return(c^-1)>>>0};
+function zip(files){const e=new TextEncoder(),ch=[],cd=[],u16=n=>[n&255,n>>8&255],u32=n=>[n&255,n>>8&255,n>>16&255,n>>>24&255];let off=0;
+files.forEach(([nm,tx])=>{const nb=e.encode(nm),d=e.encode(tx),c=crc(d),h=[0x50,0x4b,3,4,...u16(20),...u16(0),...u16(0),...u16(0),...u16(33),...u32(c),...u32(d.length),...u32(d.length),...u16(nb.length),...u16(0)];
+ch.push(new Uint8Array(h),nb,d);cd.push(new Uint8Array([0x50,0x4b,1,2,...u16(20),...u16(20),...u16(0),...u16(0),...u16(0),...u16(33),...u32(c),...u32(d.length),...u32(d.length),...u16(nb.length),...u16(0),...u16(0),...u16(0),...u16(0),...u32(0),...u32(off)]),nb);off+=h.length+nb.length+d.length});
+const cs=cd.reduce((a,x)=>a+x.length,0);return new Blob([...ch,...cd,new Uint8Array([0x50,0x4b,5,6,0,0,0,0,...u16(files.length),...u16(files.length),...u32(cs),...u32(off),0,0])],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"})}
+const XH='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',NS='xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"';
+function sheetXml(rows){const w=[];rows.forEach(r=>r.forEach((v,i)=>w[i]=Math.max(w[i]||10,Math.min(48,String(v).length+4))));
+return XH+`<worksheet ${NS}><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>${w.map((x,i)=>`<col min="${i+1}" max="${i+1}" width="${x}" customWidth="1"/>`).join("")}</cols><sheetData>${rows.map((r,y)=>`<row r="${y+1}">${r.map((v,i)=>{const a=String.fromCharCode(65+i)+(y+1),num=typeof v=="number";return num?`<c r="${a}" s="${y?2:1}"><v>${Math.round(v*100)/100}</v></c>`:`<c r="${a}" s="${y?0:1}" t="inlineStr"><is><t>${esc(v)}</t></is></c>`}).join("")}</row>`).join("")}</sheetData></worksheet>`}
+function exportXls(useSelected=false){
+  let from=useSelected?reportFrom:"",to=useSelected?reportTo:"";
+  if(!useSelected){
+    from=prompt("Export From date (YYYY-MM-DD). Leave blank for all dates:","")||"";
+    to=prompt("Export To date (YYYY-MM-DD). Leave blank for all dates:","")||"";
+  }
+  if((useSelected && (!from||!to))){alert("Select From date and To date first.");return}
+  if(from&&to&&from>to){alert("From date cannot be after To date.");return}
+  const SS=useSelected?dateRange(S):S,PP=useSelected?dateRange(PU):PU;
+  const ph=(D,n)=>(D.find(x=>x[0]==n)||[])[1]||"-",gp=SS.reduce((a,x)=>a+prof(x),0),ts=sum(SS,3),tp=sum(PP,3);
+  const its=x=>x[6]||[["Assorted items",1,x[3],x[3]*.8]],od=x=>bal(x)>0&&x[5]&&x[5]<TODAY?"Yes":"No";
+  const sh=[["Summary",[["Summary","Value"],["Shop",cfg.name],["Report From",from?fd(from):"All dates"],["Report To",to?fd(to):"All dates"],["Total sales",ts],["Received from customers",sum(SS,4)],["Receivable (customers owe)",SS.reduce((a,x)=>a+bal(x),0)],["Gross profit",gp],["Total purchases",tp],["Paid to suppliers",sum(PP,4)],["Payable (you owe)",PP.reduce((a,x)=>a+bal(x),0)],["Products",P.length],["Customers",CU.length],["Suppliers",SU.length]]],
+  ["Sales",[["Invoice","Date","Customer","Customer ID","Phone","Items","Total","Cash Paid","Crop Credit","Balance","Due Date","Status","Refund"],...SS.map(x=>[x[0],fd(x[1]),x[2],customerId(x[2]),ph(CU,x[2]),its(x).map(l=>l[0]+" x"+l[1]).join(", "),x[3],x[4],(x[8]||[]).reduce((a,c)=>a+c.amount,0),bal(x),fd(x[5]),st(x)[0],x[10]||0])]],
+  ["Sale Items",[["Invoice","Date","Customer","Customer ID","Product","Qty","Unit Price","Unit Cost","Amount","Profit"],...SS.flatMap(x=>its(x).map(l=>[x[0],fd(x[1]),x[2],customerId(x[2]),l[0],l[1],l[2],l[3]??l[2]*.8,l[1]*l[2],l[1]*(l[2]-(l[3]??l[2]*.8))]))]],
+  ["Crop Settlements",[["Date","Invoice","Customer","Customer ID","Crop Type","Rate","Quantity","Value","Refund/Return","Balance After"],...SS.flatMap(x=>(x[8]||[]).map(c=>[fd(c.date||x[1]),x[0],x[2],customerId(x[2]),c.type,c.price,c.qty,c.amount,x[10]||0,bal(x)]))]],
+  ["Purchases",[["Invoice","Date","Supplier","Phone","Total","Paid","Balance","Due Date","Status"],...PP.map(x=>[x[0],fd(x[1]),x[2],ph(SU,x[2]),x[3],x[4],bal(x),fd(x[5]),bal(x)>0?st(x)[0]:"Paid"])]],
+  ["Customers",[["Customer ID","Customer","Phone","Invoices","Total Sales","Cash Paid","Crop Credit","Balance Due","Status"],...CU.map(c=>{const a=S.filter(x=>x[2]==c[0]),d=customerSummary(c[0]);return[c[2],c[0],c[1],a.length,d.total,d.paid,d.crop,d.balance,d.balance>0?"Pending":"Clear"]})]],
+  ["Suppliers",[["Supplier","Phone","Purchases","Total Purchased","Paid","Balance Payable","Status"],...SU.map(c=>{const a=PU.filter(x=>x[2]==c[0]);return[c[0],c[1],a.length,sum(a,3),sum(a,4),a.reduce((z,x)=>z+bal(x),0),a.reduce((z,x)=>z+bal(x),0)>0?"Pending":"Clear"]})]],
+  ["Pending Payments",[["Type","Invoice","Party","Total","Paid","Balance","Due Date","Status","Overdue"],...SS.filter(x=>bal(x)>0).map(x=>["Receivable",x[0],x[2],x[3],x[4],bal(x),fd(x[5]),st(x)[0],od(x)]),...PP.filter(x=>bal(x)>0).map(x=>["Payable",x[0],x[2],x[3],x[4],bal(x),fd(x[5]),st(x)[0],od(x)])]],
+  ["Products",[["Product","Category","Stock","Min Level","Cost","Sale Price","Stock Value","Status"],...P.map(p=>[p[0],p[1],p[2],p[3],p[5],p[4],p[2]*p[4],pst(p)[0]])]]];
+  const f=[["[Content_Types].xml",XH+`<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>${sh.map((s,i)=>`<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join("")}</Types>`],
+  ["_rels/.rels",XH+`<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`],
+  ["xl/workbook.xml",XH+`<workbook ${NS} xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${sh.map((s,i)=>`<sheet name="${s[0]}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join("")}</sheets></workbook>`],
+  ["xl/_rels/workbook.xml.rels",XH+`<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${sh.map((s,i)=>`<Relationship Id="rId${i+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i+1}.xml"/>`).join("")}<Relationship Id="rId99" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`],
+  ["xl/styles.xml",XH+`<styleSheet ${NS}><numFmts count="1"><numFmt numFmtId="164" formatCode="#,##0"/></numFmts><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF0B8457"/></patternFill></fill></fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf/></cellStyleXfs><cellXfs count="3"><xf/><xf fontId="1" fillId="2" applyFont="1" applyFill="1"/><xf numFmtId="164" applyNumberFormat="1"/></cellXfs></styleSheet>`],
+  ...sh.map((s,i)=>[`xl/worksheets/sheet${i+1}.xml`,sheetXml(s[1])])];
+  const a=document.createElement("a");a.href=URL.createObjectURL(zip(f));a.download=cfg.name.replace(/[^\w-]+/g,"_")+"_Report_"+(from&&to?from+"_to_"+to:TODAY)+".xlsx";document.body.appendChild(a);a.click();a.remove()
+}
+try{if(sessionStorage.getItem("fpin"))document.body.classList.remove("lo")}catch(e){}
+brand();
+render();
+</script></body></html>
